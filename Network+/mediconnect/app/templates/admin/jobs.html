@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Jobs - MediConnect{% endblock %}
+
+{% block content %}
+<h2>Job Management</h2>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <form method="GET" action="{{ url_for('admin.jobs') }}">
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem;">
+            <div>
+                <select name="status">
+                    <option value="">All Statuses</option>
+                    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                    <option value="closed" {% if status_filter == 'closed' %}selected{% endif %}>Closed</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Filter</button>
+        </div>
+    </form>
+</div>
+
+{% if jobs.items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Hospital</th>
+                <th>Specialization</th>
+                <th>Status</th>
+                <th>Applications</th>
+                <th>Posted</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs.items %}
+                <tr>
+                    <td>{{ job.title }}</td>
+                    <td>{{ job.hospital.hospital_name }}</td>
+                    <td>{{ job.specialization }}</td>
+                    <td>
+                        {% if job.status == 'active' %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-danger">Closed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ job.applications|length }}</td>
+                    <td>{{ job.created_at.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        {% if job.status == 'active' %}
+                            <form method="POST" action="{{ url_for('admin.close_job', job_id=job.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Close</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div style="text-align: center; margin: 2rem 0;">
+        {% if jobs.has_prev %}
+            <a href="{{ url_for('admin.jobs', page=jobs.prev_num) }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        
+        <span style="margin: 0 1rem;">Page {{ jobs.page }} of {{ jobs.pages }}</span>
+        
+        {% if jobs.has_next %}
+            <a href="{{ url_for('admin.jobs', page=jobs.next_num) }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="card">
+        <p style="text-align: center; color: #666;">No jobs found.</p>
+    </div>
+{% endif %}
+{% endblock %}

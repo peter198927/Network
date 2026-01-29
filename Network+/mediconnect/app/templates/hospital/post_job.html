@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Post a Job - MediConnect{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px;">
+    <h2>Post a New Job</h2>
+
+    <div class="card">
+        <form method="POST" action="{{ url_for('hospital.post_job') }}">
+            <div class="form-group">
+                <label for="title">Job Title</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label for="specialization">Required Specialization</label>
+                <input type="text" id="specialization" name="specialization" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Job Description</label>
+                <textarea id="description" name="description" rows="5" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="salary_min">Minimum Salary ($)</label>
+                    <input type="number" id="salary_min" name="salary_min" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label for="salary_max">Maximum Salary ($)</label>
+                    <input type="number" id="salary_max" name="salary_max" step="0.01">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="experience_required">Years of Experience Required</label>
+                    <input type="number" id="experience_required" name="experience_required" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="job_type">Job Type</label>
+                    <select id="job_type" name="job_type">
+                        <option value="full-time">Full-time</option>
+                        <option value="part-time">Part-time</option>
+                        <option value="contract">Contract</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Post Job</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

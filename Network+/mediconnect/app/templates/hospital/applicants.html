@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}My Job Postings - MediConnect{% endblock %}
+
+{% block content %}
+<h2>My Job Postings</h2>
+
+{% if jobs.items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Specialization</th>
+                <th>Status</th>
+                <th>Applications</th>
+                <th>Posted Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs.items %}
+                <tr>
+                    <td>{{ job.title }}</td>
+                    <td>{{ job.specialization }}</td>
+                    <td>
+                        {% if job.status == 'active' %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-danger">Closed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ job.applications|length }}</td>
+                    <td>{{ job.created_at.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('hospital.applicants', job_id=job.id) }}" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">View Applicants</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div style="text-align: center; margin: 2rem 0;">
+        {% if jobs.has_prev %}
+            <a href="{{ url_for('hospital.my_jobs', page=jobs.prev_num) }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        
+        <span style="margin: 0 1rem;">Page {{ jobs.page }} of {{ jobs.pages }}</span>
+        
+        {% if jobs.has_next %}
+            <a href="{{ url_for('hospital.my_jobs', page=jobs.next_num) }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="card">
+        <p style="text-align: center; color: #666;">You haven't posted any jobs yet. <a href="{{ url_for('hospital.post_job') }}">Post a job</a></p>
+    </div>
+{% endif %}
+{% endblock %}

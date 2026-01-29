@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - MediConnect{% endblock %}
+
+{% block content %}
+<h2>User Management</h2>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <form method="GET" action="{{ url_for('admin.users') }}">
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem;">
+            <div>
+                <select name="role">
+                    <option value="">All Roles</option>
+                    <option value="doctor" {% if role_filter == 'doctor' %}selected{% endif %}>Doctor</option>
+                    <option value="hospital" {% if role_filter == 'hospital' %}selected{% endif %}>Hospital</option>
+                    <option value="admin" {% if role_filter == 'admin' %}selected{% endif %}>Admin</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Filter</button>
+        </div>
+    </form>
+</div>
+
+{% if users.items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users.items %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td><span class="badge badge-primary">{{ user.role }}</span></td>
+                    <td>
+                        {% if user.is_verified %}
+                            <span class="badge badge-success">Verified</span>
+                        {% else %}
+                            <span class="badge badge-warning">Unverified</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        {% if not user.is_verified %}
+                            <form method="POST" action="{{ url_for('admin.verify_user', user_id=user.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-success" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Verify</button>
+                            </form>
+                        {% endif %}
+                        <form method="POST" action="{{ url_for('admin.deactivate_user', user_id=user.id) }}" style="display: inline;" onsubmit="return confirm('Are you sure?');">
+                            <button type="submit" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div style="text-align: center; margin: 2rem 0;">
+        {% if users.has_prev %}
+            <a href="{{ url_for('admin.users', page=users.prev_num) }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        
+        <span style="margin: 0 1rem;">Page {{ users.page }} of {{ users.pages }}</span>
+        
+        {% if users.has_next %}
+            <a href="{{ url_for('admin.users', page=users.next_num) }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="card">
+        <p style="text-align: center; color: #666;">No users found.</p>
+    </div>
+{% endif %}
+{% endblock %}

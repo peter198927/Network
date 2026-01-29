@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-container">
+    <h2>Your Applications</h2>
+    <div class="app-grid">
+        {% for app in applications %}
+        <div class="card app-card">
+            <div class="card-header">
+                <h3>{{ app.title }}</h3>
+                <span class="badge badge-{{ app.status|lower }}">{{ app.status }}</span>
+            </div>
+            <p><strong>Hospital:</strong> {{ app.name }}</p>
+            <p><strong>Applied on:</strong> {{ app.applied_at.strftime('%Y-%m-%d') }}</p>
+            
+            {% if app.status == 'Pending' %}
+                <p class="text-muted small">The hospital is currently reviewing your profile.</p>
+            {% elif app.status == 'Accepted' %}
+                <p class="text-success">Congratulations! Check your email for next steps.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

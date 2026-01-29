@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - MediConnect{% endblock %}
+
+{% block content %}
+<h2>System Reports</h2>
+
+<div class="card">
+    <h3>Job Statistics</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status, count in job_stats.by_status %}
+                <tr>
+                    <td><strong>{{ status }}</strong></td>
+                    <td>{{ count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>Application Statistics</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status, count in app_stats.by_status %}
+                <tr>
+                    <td><strong>{{ status }}</strong></td>
+                    <td>{{ count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>User Statistics</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for role, count in user_stats.by_role %}
+                <tr>
+                    <td><strong>{{ role }}</strong></td>
+                    <td>{{ count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

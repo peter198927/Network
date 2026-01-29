@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Applications - MediConnect{% endblock %}
+
+{% block content %}
+<h2>Job Applications</h2>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <form method="GET" action="{{ url_for('admin.applications') }}">
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem;">
+            <div>
+                <select name="status">
+                    <option value="">All Statuses</option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="reviewed" {% if status_filter == 'reviewed' %}selected{% endif %}>Reviewed</option>
+                    <option value="accepted" {% if status_filter == 'accepted' %}selected{% endif %}>Accepted</option>
+                    <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+            <button type="submit" class="btn">Filter</button>
+        </div>
+    </form>
+</div>
+
+{% if applications.items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Job</th>
+                <th>Hospital</th>
+                <th>Applied Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications.items %}
+                <tr>
+                    <td>{{ app.doctor.full_name }}</td>
+                    <td>{{ app.job.title }}</td>
+                    <td>{{ app.job.hospital.hospital_name }}</td>
+                    <td>{{ app.applied_at.strftime('%b %d, %Y') }}</td>
+                    <td>
+                        {% if app.status == 'pending' %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% elif app.status == 'reviewed' %}
+                            <span class="badge badge-info">Reviewed</span>
+                        {% elif app.status == 'accepted' %}
+                            <span class="badge badge-success">Accepted</span>
+                        {% elif app.status == 'rejected' %}
+                            <span class="badge badge-danger">Rejected</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div style="text-align: center; margin: 2rem 0;">
+        {% if applications.has_prev %}
+            <a href="{{ url_for('admin.applications', page=applications.prev_num) }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        
+        <span style="margin: 0 1rem;">Page {{ applications.page }} of {{ applications.pages }}</span>
+        
+        {% if applications.has_next %}
+            <a href="{{ url_for('admin.applications', page=applications.next_num) }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="card">
+        <p style="text-align: center; color: #666;">No applications found.</p>
+    </div>
+{% endif %}
+{% endblock %}

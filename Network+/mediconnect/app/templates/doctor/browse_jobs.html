@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Jobs - MediConnect{% endblock %}
+
+{% block content %}
+<h2>Browse Medical Jobs</h2>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <form method="GET" action="{{ url_for('doctor.browse_jobs') }}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div>
+            <input type="text" name="search" placeholder="Job title or keyword..." value="{{ search }}">
+        </div>
+        <div>
+            <input type="text" name="specialization" placeholder="Specialization...">
+        </div>
+        <div>
+            <input type="text" name="location" placeholder="Location...">
+        </div>
+        <div>
+            <button type="submit" class="btn">Search</button>
+        </div>
+    </form>
+</div>
+
+{% if jobs.items %}
+    <div class="grid">
+        {% for job in jobs.items %}
+            <div class="card">
+                <h3>{{ job.title }}</h3>
+                <p><strong>Hospital:</strong> {{ job.hospital.hospital_name }}</p>
+                <p><strong>Specialization:</strong> <span class="badge badge-info">{{ job.specialization }}</span></p>
+                <p><strong>Location:</strong> {{ job.location or 'Not specified' }}</p>
+                <p><strong>Job Type:</strong> {{ job.job_type or 'Not specified' }}</p>
+                
+                {% if job.salary_min or job.salary_max %}
+                    <p><strong>Salary:</strong> 
+                        {% if job.salary_min %}${{ "{:,.0f}".format(job.salary_min) }}{% endif %}
+                        {% if job.salary_min and job.salary_max %} - {% endif %}
+                        {% if job.salary_max %}${{ "{:,.0f}".format(job.salary_max) }}{% endif %}
+                    </p>
+                {% endif %}
+                
+                <p><strong>Experience Required:</strong> {{ job.experience_required }} years</p>
+                
+                <p style="margin: 1rem 0; color: #666;">{{ job.description[:150] }}...</p>
+                
+                <form method="POST" action="{{ url_for('doctor.apply_job', job_id=job.id) }}" style="display: flex; gap: 0.5rem;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">Apply Now</button>
+                    <a href="#" class="btn btn-secondary" style="flex: 1; text-align: center;">View Details</a>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div style="text-align: center; margin: 2rem 0;">
+        {% if jobs.has_prev %}
+            <a href="{{ url_for('doctor.browse_jobs', page=jobs.prev_num) }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        
+        <span style="margin: 0 1rem;">Page {{ jobs.page }} of {{ jobs.pages }}</span>
+        
+        {% if jobs.has_next %}
+            <a href="{{ url_for('doctor.browse_jobs', page=jobs.next_num) }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="card">
+        <p style="text-align: center; color: #666;">No jobs found. Try adjusting your search criteria.</p>
+    </div>
+{% endif %}
+{% endblock %}

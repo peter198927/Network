@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - MediConnect{% endblock %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<div class="grid">
+    <div class="stat-card">
+        <h3>{{ stats.total_users }}</h3>
+        <p>Total Users</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.verified_users }}</h3>
+        <p>Verified Users</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.doctors }}</h3>
+        <p>Doctors</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.hospitals }}</h3>
+        <p>Hospitals</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.total_jobs }}</h3>
+        <p>Total Job Posts</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.total_applications }}</h3>
+        <p>Applications</p>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h3>Management Options</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        <a href="{{ url_for('admin.users') }}" class="btn">Manage Users</a>
+        <a href="{{ url_for('admin.jobs') }}" class="btn">Manage Jobs</a>
+        <a href="{{ url_for('admin.applications') }}" class="btn">View Applications</a>
+        <a href="{{ url_for('admin.reports') }}" class="btn">View Reports</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Hospital Dashboard - MediConnect{% endblock %}
+
+{% block content %}
+<h2>Hospital Dashboard</h2>
+
+<div class="grid">
+    <div class="stat-card">
+        <h3>{{ stats.total_jobs }}</h3>
+        <p>Total Jobs Posted</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.active_jobs }}</h3>
+        <p>Active Job Postings</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.total_applications }}</h3>
+        <p>Total Applications</p>
+    </div>
+    <div class="stat-card">
+        <h3>{{ stats.pending_applications }}</h3>
+        <p>Pending Applications</p>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h3>Quick Actions</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        <a href="{{ url_for('hospital.post_job') }}" class="btn">Post New Job</a>
+        <a href="{{ url_for('hospital.my_jobs') }}" class="btn">View My Jobs</a>
+        <a href="{{ url_for('hospital.profile') }}" class="btn">Edit Profile</a>
+    </div>
+</div>
+{% endblock %}
